@@ -110,18 +110,26 @@
     <header class="relative w-full h-[100svh] bg-glassBeige overflow-hidden flex items-center justify-end pt-16">
         <!-- 背景圖片：靠右對齊並避免切到人物 -->
         <div class="absolute inset-0 w-full h-full lg:w-3/4 lg:ml-auto right-0 z-0">
-            <img src="https://i.postimg.cc/y69gBJ1F/O60A6573.png" class="w-full h-full object-cover object-[center_20%] lg:object-contain lg:object-right" alt="Landy and Shady">
+            <img src="https://i.postimg.cc/pXBXszCn/O60A65738-02.jpg" class="w-full h-full object-cover object-[center_20%] lg:object-contain lg:object-right" alt="Landy and Shady">
         </div>
         
         <!-- 左側淺米色毛玻璃漸層遮罩 (確保白色文字在各種螢幕都清晰) -->
         <div class="absolute inset-0 bg-gradient-to-r from-glassBeige/95 via-glassBeige/70 to-transparent w-full md:w-2/3 z-0"></div>
 
         <!-- 文字排版區 -->
-        <div class="relative z-10 w-full max-w-7xl mx-auto px-8 md:px-16 flex flex-col justify-center h-full drop-shadow-md">
-            <div class="max-w-xl text-white">
-                <h1 class="font-hoefler text-5xl md:text-7xl lg:text-8xl mb-2 md:mb-6 tracking-wide drop-shadow-lg">Landy & Shady</h1>
-                <p class="font-hoefler text-3xl md:text-5xl mb-2 md:mb-4 tracking-wider text-white/95">Save the Date</p>
-                <p class="font-hoefler text-xl md:text-3xl tracking-widest text-white/90">2026.11.01</p>
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-8 md:px-16 flex items-center h-full drop-shadow-md">
+            <!-- 限制在左側區域並確保內部元素全部垂直置中對齊 -->
+            <div class="w-full md:w-1/2 lg:w-[45%] flex flex-col items-center text-center text-white mt-10 md:mt-0">
+                
+                <!-- 名字區塊 -->
+                <h1 class="font-hoefler text-3xl md:text-5xl tracking-widest drop-shadow-lg leading-none">Landy</h1>
+                <span class="font-hoefler text-base md:text-xl my-4 md:my-5 drop-shadow-md opacity-80 font-light">╳</span>
+                <h1 class="font-hoefler text-3xl md:text-5xl tracking-widest drop-shadow-lg leading-none mb-10 md:mb-12">Shady</h1>
+                
+                <!-- 資訊區塊 -->
+                <p class="font-hoefler text-xl md:text-2xl mb-3 tracking-widest text-white/95 drop-shadow-md">Save the Date</p>
+                <p class="font-hoefler text-sm md:text-lg tracking-[0.25em] text-white/90 drop-shadow-md">2o26.11.o1</p>
+
             </div>
         </div>
     </header>
@@ -171,10 +179,10 @@
         <!-- 左右滿版照片 -->
         <div class="flex flex-col md:flex-row w-full h-[60vh] md:h-[75vh]">
             <div class="w-full md:w-1/2 h-full">
-                <img src="https://i.postimg.cc/Y9F9pVwV/O60A6811.png" alt="About Us Left" class="w-full h-full object-cover">
+                <img src="https://i.postimg.cc/nLNHXkFk/O60A6811-02.jpg" alt="About Us Left" class="w-full h-full object-cover">
             </div>
             <div class="w-full md:w-1/2 h-full">
-                <img src="https://i.postimg.cc/5NgtNLZC/O60A6868.png" alt="About Us Right" class="w-full h-full object-cover">
+                <img src="https://i.postimg.cc/qqx0ZH8W/O60A6868-02.jpg" alt="About Us Right" class="w-full h-full object-cover">
             </div>
         </div>
 
