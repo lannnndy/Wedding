@@ -176,18 +176,21 @@
 
     <!-- 關於我們區塊 -->
     <section id="about" class="w-full relative pb-20">
-        <!-- 左右滿版照片 (強制手機也是左右並列) -->
-        <div class="flex flex-row w-full h-[45vh] md:h-[75vh]">
-            <div class="w-1/2 h-full">
-                <img src="https://i.postimg.cc/Y9F9pVwV/O60A6811.png" alt="About Us Left" class="w-full h-full object-cover">
-            </div>
-            <div class="w-1/2 h-full">
-                <img src="https://i.postimg.cc/5NgtNLZC/O60A6868.png" alt="About Us Right" class="w-full h-full object-cover">
+        <!-- 左右滿版照片 (限制大螢幕的最大寬度與照片對齊位置，避免過度裁切) -->
+        <div class="w-full flex justify-center bg-bgBeige">
+            <div class="flex flex-row w-full max-w-[1600px] h-[45vh] md:h-[75vh] lg:h-[85vh]">
+                <div class="w-1/2 h-full">
+                    <img src="https://i.postimg.cc/nLNHXkFk/O60A6811-02.jpg" alt="About Us Left" class="w-full h-full object-cover object-[center_20%]">
+                </div>
+                <div class="w-1/2 h-full">
+                    <img src="https://i.postimg.cc/qqx0ZH8W/O60A6868-02.jpg" alt="About Us Right" class="w-full h-full object-cover object-[center_20%]">
+                </div>
             </div>
         </div>
 
         <!-- 毛玻璃文字方塊 -->
-        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-0 -mt-16 md:-mt-32 flex justify-center">
+        <!-- 縮小負邊距避免擋住照片主體，只保留輕微的毛玻璃疊加層次感 -->
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-0 -mt-10 md:-mt-16 flex justify-center">
             <div class="bg-gray-100/90 backdrop-blur-lg rounded-2xl shadow-glow-lg w-full p-6 md:p-16 text-center border border-white/50 relative overflow-hidden">
                 
                 <h3 class="font-noto text-base md:text-3xl text-morandiGreen font-bold tracking-widest mb-6 md:mb-8 leading-relaxed relative z-10 pt-2">
@@ -205,7 +208,8 @@
     </section>
 
     <!-- 婚禮詳情 (V-Card) -->
-    <section id="details" class="relative w-full py-28 bg-fixed bg-center bg-cover" style="background-image: url('https://i.postimg.cc/CLkD6pgR/O60A6823.jpg');">
+    <!-- 針對手機版移除 bg-fixed 改為 bg-scroll 解決放大 Bug，並設定對焦點 bg-[center_25%] 確保人物入鏡 -->
+    <section id="details" class="relative w-full py-12 md:py-28 bg-scroll md:bg-fixed bg-[center_25%] md:bg-center bg-cover" style="background-image: url('https://i.postimg.cc/CLkD6pgR/O60A6823.jpg');">
         <!-- 黑白灰階遮罩與白色半透明覆蓋 -->
         <div class="absolute inset-0 bg-white/85 backdrop-grayscale"></div>
         
