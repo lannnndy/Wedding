@@ -329,23 +329,23 @@
                         </div>
                     </div>
 
-                    <!-- 4. 關係 (entry.1157217011) -->
+                    <!-- 4. 關係 -->
                     <div>
                         <label class="block font-bold text-morandiGreen mb-3 text-sm">您是哪一方的親友？ <span class="text-red-400">*</span></label>
-                        <div class="flex flex-col sm:flex-row gap-3 md:gap-4">
-                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
-                                <input type="radio" name="entry.1157217011" value="新郎親友" required class="w-4 h-4 mr-3"> 新郎親友
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium">
+                                <input type="radio" name="entry.1975877041" value="新郎親友" required class="w-4 h-4 mr-3"> 新郎親友
                             </label>
-                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
-                                <input type="radio" name="entry.1157217011" value="新娘親友" class="w-4 h-4 mr-3"> 新娘親友
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium">
+                                <input type="radio" name="entry.1975877041" value="新娘親友" class="w-4 h-4 mr-3"> 新娘親友
                             </label>
                         </div>
                     </div>
 
-                    <!-- 5. 出席人數 (entry.1073911048) -->
-                    <div>
-                        <label class="block font-bold text-morandiGreen mb-2 text-sm">出席總人數（請包含小孩，若無法參加請填 0） <span class="text-red-400">*</span></label>
-                        <input type="number" id="attendees-count" name="entry.1073911048" min="0" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="例如：2">
+                    <!-- 5. 出席人數 -->
+                    <div id="attendees-section" class="form-section active" style="margin-top: 0;">
+                        <label class="block font-bold text-morandiGreen mb-2 text-sm">出席總人數（請包含小孩） <span class="text-red-400">*</span></label>
+                        <input type="number" id="attendees-count" name="entry.1069781601" min="0" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="例如：2">
                     </div>
 
                     <!-- 動態區塊 1：攜伴姓名 (當人數 > 1 時顯示) -->
@@ -457,9 +457,10 @@
 
     <script>
         // ------------------------------------
-        // 計時器邏輯
+        // 計時器邏輯 (優化：對齊整分鐘更新，避免耗費效能)
         // ------------------------------------
         const targetDate = new Date("2026-11-01T16:30:00+08:00").getTime();
+        let timerInterval;
         
         function updateCountdown() {
             const now = new Date().getTime();
@@ -469,6 +470,7 @@
                 document.getElementById("countdown-cards").innerHTML = '<span class="text-xl md:text-3xl text-warmSun font-bold">The day has arrived!</span>';
                 document.getElementById("dynamic-days-text-en").innerText = "0";
                 document.getElementById("dynamic-days-text-tw").innerText = "0";
+                if(timerInterval) clearInterval(timerInterval);
                 return;
             }
 
@@ -485,8 +487,13 @@
             document.getElementById("dynamic-days-text-tw").innerText = days;
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+        updateCountdown(); // 初始執行
+        // 計算距離下一個「整分鐘」的毫秒數，然後每 60 秒更新一次
+        const msToNextMinute = 60000 - (new Date().getTime() % 60000);
+        setTimeout(() => {
+            updateCountdown();
+            timerInterval = setInterval(updateCountdown, 60000);
+        }, msToNextMinute);
 
         // ------------------------------------
         // 交通指引摺疊面板邏輯
@@ -501,99 +508,133 @@
         });
 
         // ------------------------------------
-        // 智能表單顯示邏輯
+        // 智能表單邏輯與狀態管理
         // ------------------------------------
+        const form = document.getElementById('wedding-form');
+        
+        // 欄位元件
         const attendeesInput = document.getElementById('attendees-count');
-        const dynamicNeedsSection = document.getElementById('dynamic-needs-section');
-        const companionSection = document.getElementById('companion-section');
         const companionInput = document.getElementById('companion-name');
+        const vegCountInput = document.querySelector('input[name="entry.814998807"]'); 
+        const babyCountInput = document.querySelector('input[name="entry.344888374"]');
         
-        const vegRadios = document.querySelectorAll('.veg-radio');
-        const vegCountSection = document.getElementById('veg-count-section');
-        
-        const babyRadios = document.querySelectorAll('.baby-radio');
-        const babyCountSection = document.getElementById('baby-count-section');
-
-        const inviteRadios = document.querySelectorAll('.invite-radio');
-        const addressSection = document.getElementById('address-section');
+        // 兼容不同版本的地址欄位
         const zipInput = document.getElementById('zip-code-input');
         const addressDetailInput = document.getElementById('address-detail-input');
+        const physicalAddressInput = document.getElementById('physical-address'); 
+        
+        // 區塊元件
+        const attendeesSection = document.getElementById('attendees-section');
+        const companionSection = document.getElementById('companion-section');
+        const dynamicNeedsSection = document.getElementById('dynamic-needs-section');
+        const vegCountSection = document.getElementById('veg-count-section');
+        const babyCountSection = document.getElementById('baby-count-section');
+        const addressSection = document.getElementById('address-section');
 
-        // 監聽人數變化
-        attendeesInput.addEventListener('input', function() {
-            const val = parseInt(this.value);
+        function syncFormState() {
+            // 抓取意願 (兼容不同 entry ID)
+            const isAttending = document.querySelector('input[name="entry.1627462693"]:checked')?.value === '排除萬難都參加' || document.querySelector('input[name="entry.1715883295"]:checked')?.value === '排除萬難都參加';
+            const isNotAttending = document.querySelector('input[name="entry.1627462693"]:checked')?.value === '無法參加，給予祝福' || document.querySelector('input[name="entry.1715883295"]:checked')?.value === '無法參加，給予祝福';
             
-            // 處理素食與兒童椅區塊 (人數 > 0 才顯示)
-            if (val > 0) {
-                dynamicNeedsSection.classList.add('active');
-            } else {
-                dynamicNeedsSection.classList.remove('active');
+            const attendeesVal = parseInt(attendeesInput?.value) || 0;
+            const needsVeg = document.querySelector('.veg-radio:checked')?.value === '是';
+            const needsBaby = document.querySelector('.baby-radio:checked')?.value === '是';
+            const wantsPaper = document.querySelector('.invite-radio:checked')?.value === '紙本喜帖';
+
+            // 輔助函式：控制區塊顯示與停用，確保不送出髒資料
+            const toggleSection = (section, isVisible, inputsToManage) => {
+                if (section) {
+                    if (isVisible) {
+                        section.style.display = ''; 
+                        void section.offsetWidth; // 觸發重繪確保動畫運作
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                        // 動畫結束後徹底隱藏，避免殘留排版間隙
+                        setTimeout(() => {
+                            if (!section.classList.contains('active')) section.style.display = 'none';
+                        }, 400); 
+                    }
+                }
+                if (inputsToManage) {
+                    inputsToManage.forEach(input => {
+                        if (input) {
+                            if (isVisible) {
+                                input.removeAttribute('disabled');
+                            } else {
+                                input.setAttribute('disabled', 'true');
+                                if (input.type !== 'radio' && input.type !== 'checkbox') {
+                                    input.value = ''; 
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+
+            // 1. 如果「無法參加」，隱藏並完全停用人數與餐點區塊 (保留親友關係與喜帖以便寄送心意)
+            if (isNotAttending) {
+                toggleSection(attendeesSection, false, [attendeesInput]);
+                toggleSection(companionSection, false, [companionInput]);
+                toggleSection(dynamicNeedsSection, false, [...document.querySelectorAll('.veg-radio'), ...document.querySelectorAll('.baby-radio')]);
+                toggleSection(vegCountSection, false, [vegCountInput]);
+                toggleSection(babyCountSection, false, [babyCountInput]);
+                
+                // 無法參加仍可索取紙本喜帖
+                toggleSection(addressSection, wantsPaper, [zipInput, addressDetailInput, physicalAddressInput]);
+                [zipInput, addressDetailInput, physicalAddressInput].forEach(input => {
+                    if (input) wantsPaper ? input.setAttribute('required', 'required') : input.removeAttribute('required');
+                });
+                return; 
             }
 
-            // 處理攜伴姓名區塊 (人數 > 1 才顯示)
-            if (val > 1) {
-                companionSection.classList.add('active');
+            // 2. 如果「可以參加」或「尚未填寫」，顯示必要問題並依人數動態展現
+            toggleSection(attendeesSection, true, [attendeesInput]);
+            toggleSection(companionSection, attendeesVal > 1, [companionInput]);
+            toggleSection(dynamicNeedsSection, attendeesVal > 0, [...document.querySelectorAll('.veg-radio'), ...document.querySelectorAll('.baby-radio')]);
+            
+            if (attendeesVal > 0) {
+                toggleSection(vegCountSection, needsVeg, [vegCountInput]);
+                toggleSection(babyCountSection, needsBaby, [babyCountInput]);
             } else {
-                companionSection.classList.remove('active');
-                companionInput.value = ""; // 隱藏時清空攜伴名字
+                toggleSection(vegCountSection, false, [vegCountInput]);
+                toggleSection(babyCountSection, false, [babyCountInput]);
             }
-        });
 
-        // 監聽素食選項
-        vegRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === '是') {
-                    vegCountSection.classList.add('active');
-                } else {
-                    vegCountSection.classList.remove('active');
-                }
+            // 喜帖地址判斷
+            toggleSection(addressSection, wantsPaper, [zipInput, addressDetailInput, physicalAddressInput]);
+            [zipInput, addressDetailInput, physicalAddressInput].forEach(input => {
+                if (input) wantsPaper ? input.setAttribute('required', 'required') : input.removeAttribute('required');
             });
-        });
+        }
 
-        // 監聽兒童椅選項
-        babyRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === '是') {
-                    babyCountSection.classList.add('active');
-                } else {
-                    babyCountSection.classList.remove('active');
-                }
-            });
-        });
-
-        // 監聽喜帖選項
-        inviteRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === '紙本喜帖') {
-                    addressSection.classList.add('active');
-                    zipInput.setAttribute('required', 'required');
-                    addressDetailInput.setAttribute('required', 'required');
-                } else {
-                    addressSection.classList.remove('active');
-                    zipInput.removeAttribute('required');
-                    addressDetailInput.removeAttribute('required');
-                }
-            });
-        });
+        // 統一由 syncFormState 集中接管所有表單異動
+        if (form) {
+            form.addEventListener('change', syncFormState);
+            form.addEventListener('input', syncFormState);
+            syncFormState(); // 初始載入時同步一次
+        }
 
         // ------------------------------------
         // Iframe 隱藏提交處理邏輯
         // ------------------------------------
         let submitted = false;
-        const form = document.getElementById('wedding-form');
         const hiddenIframe = document.getElementById('hidden_iframe');
 
         // 當 iframe 載入完成（即表單送出後跳轉完畢）
         hiddenIframe.addEventListener('load', function() {
             if (submitted) {
                 showSuccessMessage();
+                // 成功後清空表單並重新觸發同步，避免殘留
+                form.reset();
+                syncFormState();
             }
         });
         
         form.addEventListener('submit', function(e) {
             // 提交前，將「郵遞區號」與「詳細地址」合併，放入對應的隱藏 input 中
-            const zipVal = zipInput.value.trim();
-            const detailVal = addressDetailInput.value.trim();
+            const zipVal = zipInput?.value.trim() || '';
+            const detailVal = addressDetailInput?.value.trim() || '';
             
             const isPaperInvite = document.querySelector('input[name="entry.444061940"]:checked')?.value === '紙本喜帖';
             
