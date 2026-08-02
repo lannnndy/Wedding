@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Landy & Shady Wedding</title>
-    
     <!-- 引入 Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +12,7 @@
     <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Tailwind 自訂設定檔 -->
     <script>
         tailwind.config = {
             theme: {
@@ -38,12 +38,21 @@
 
     <style>
         /* 全域平滑滾動 */
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
         
         /* 隱藏滾動條但保持功能 */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f9f8f6; }
-        ::-webkit-scrollbar-thumb { background: #d4a373; border-radius: 10px; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f9f8f6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a373;
+            border-radius: 10px;
+        }
 
         /* 摺疊面板過渡動畫 */
         .accordion-content {
@@ -65,321 +74,388 @@
             overflow: hidden;
         }
         .form-section.active {
-            max-height: 400px;
+            max-height: 600px; /* 放寬高度以容納新增的欄位 */
             opacity: 1;
             margin-top: 1rem;
         }
         
-        /* 表單輸入框焦點與單選框樣式 */
+        /* 表單輸入框焦點樣式 */
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #d4a373;
             box-shadow: 0 0 0 1px #d4a373;
         }
-        input[type="radio"] { accent-color: #d4a373; }
         
-        /* 毛玻璃遮罩優化 */
-        .glass-mask {
-            background: linear-gradient(90deg, rgba(244,241,235,0.95) 0%, rgba(244,241,235,0.7) 40%, rgba(244,241,235,0) 100%);
+        /* 客製化單選框樣式 */
+        input[type="radio"] {
+            accent-color: #d4a373;
+        }
+        
+        /* 手機版封面文字陰影 (確保在無遮罩時仍可辨識) */
+        .mobile-text-shadow {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body class="bg-bgBeige font-noto text-gray-800 antialiased selection:bg-warmSun selection:text-white">
 
+    <!-- 頂端毛玻璃導覽列 -->
     <nav class="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-white/20 shadow-sm transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="font-hoefler text-warmSun text-xl tracking-widest font-bold">L & S</div>
-            <div class="flex space-x-5 md:space-x-8 text-sm md:text-base font-medium text-morandiGreen">
-                <a href="#about" class="hover:text-warmSun transition-colors">關於我們</a>
-                <a href="#details" class="hover:text-warmSun transition-colors">婚禮詳情</a>
-                <a href="#rsvp" class="hover:text-warmSun transition-colors">出席回函</a>
+            <div class="flex space-x-6 text-sm md:text-base font-medium text-morandiGreen">
+                <a href="#about" class="hover:text-warmSun transition-colors">關於</a>
+                <a href="#details" class="hover:text-warmSun transition-colors">詳情</a>
+                <a href="#rsvp" class="hover:text-warmSun transition-colors">回函</a>
             </div>
         </div>
     </nav>
 
-    <header class="relative w-full h-[100svh] bg-glassBeige overflow-hidden flex items-center pt-16">
-        <!-- 背景底色，確保腳部不夠長時有米色毛玻璃底 -->
-        <div class="absolute inset-0 bg-glassBeige z-0"></div>
+    <!-- 封面視覺區 (調整手機版排版) -->
+    <header class="relative w-full h-[100svh] bg-glassBeige overflow-hidden flex flex-col md:flex-row items-center justify-center md:justify-end pt-16">
         
-        <!-- 背景圖片：照片完全置中 -->
-        <div class="absolute inset-0 w-full h-full z-0 flex items-center justify-center">
-            <img src="https://i.postimg.cc/pXBXszCn/O60A65738-02.jpg" class="w-full h-full object-cover md:object-contain object-center" alt="Landy and Shady">
+        <!-- 背景圖片：手機版置中，電腦版靠右對齊 -->
+        <div class="absolute inset-0 w-full h-full lg:w-3/4 lg:ml-auto right-0 z-0">
+            <!-- 加入一點點漸層暗角，確保頂部文字在手機上可以看見 -->
+            <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent md:hidden z-10"></div>
+            <img src="https://i.postimg.cc/pXBXszCn/O60A65738-02.jpg" class="w-full h-full object-cover object-center lg:object-contain lg:object-right relative z-0" alt="Landy and Shady">
         </div>
+        
+        <!-- 左側淺米色毛玻璃漸層遮罩 (僅在電腦版 md 以上顯示) -->
+        <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-glassBeige/95 via-glassBeige/70 to-transparent w-full md:w-2/3 z-10"></div>
 
-        <!-- 文字排版區 (進一步縮小字體、更靠上對齊，確保最下方的字在人頭上方) -->
-        <div class="relative z-10 w-full h-full flex flex-col justify-start items-center text-center text-white px-4 pt-[8vh] md:pt-[10vh]">
+        <!-- 文字排版區 (手機版移至上方對齊，縮小字體) -->
+        <div class="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-16 flex items-start pt-[8svh] md:pt-0 md:items-center h-full drop-shadow-md">
+            <!-- 文字容器 -->
+            <div class="w-full md:w-1/2 lg:w-[45%] flex flex-col items-center text-center text-white">
                 
-            <h1 class="font-hoefler text-3xl md:text-5xl tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] leading-none mb-1">Landy</h1>
-            <span class="font-hoefler text-lg md:text-xl my-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] font-light">╳</span>
-            <h1 class="font-hoefler text-3xl md:text-5xl tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] leading-none mb-5 md:mb-6">Shady</h1>
-            
-            <p class="font-hoefler text-lg md:text-xl mb-2 tracking-widest text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">Save the Date</p>
-            <p class="font-hoefler text-sm md:text-base tracking-[0.3em] text-white/95 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">2026.11.01</p>
-
+                <!-- 名字區塊 (縮小字體以保持手機版集中且不擋頭) -->
+                <h1 class="font-hoefler text-3xl md:text-5xl tracking-widest leading-none mobile-text-shadow md:drop-shadow-lg">Landy</h1>
+                <span class="font-hoefler text-sm md:text-xl my-2 md:my-5 opacity-90 font-light mobile-text-shadow md:drop-shadow-md">╳</span>
+                <h1 class="font-hoefler text-3xl md:text-5xl tracking-widest leading-none mb-6 md:mb-12 mobile-text-shadow md:drop-shadow-lg">Shady</h1>
+                
+                <!-- 資訊區塊 -->
+                <p class="font-hoefler text-lg md:text-2xl mb-2 tracking-widest text-white/95 mobile-text-shadow md:drop-shadow-md">Save the Date</p>
+                <p class="font-hoefler text-xs md:text-lg tracking-[0.25em] text-white/90 mobile-text-shadow md:drop-shadow-md">2o26.11.o1</p>
+            </div>
         </div>
     </header>
 
-    <section class="py-20 md:py-32 bg-bgBeige flex flex-col items-center justify-center relative z-20 shadow-[0_-15px_40px_rgba(249,248,246,1)]">
-        <h2 class="font-hoefler text-lg md:text-3xl text-warmSun tracking-wider mb-10 md:mb-16 text-center px-4 drop-shadow-sm">From old times to our wedding night.</h2>
+    <!-- 計時器視覺區 -->
+    <section class="py-12 md:py-28 bg-bgBeige flex flex-col items-center justify-center relative z-20 shadow-[0_-10px_30px_rgba(249,248,246,1)] px-4">
         
-        <!-- 卡片式倒數 -->
-        <div class="flex flex-row justify-center items-center gap-4 md:gap-10 mb-10 px-2" id="countdown-cards">
+        <div class="text-center mb-6 md:mb-10 px-4">
+            <h2 class="font-hoefler text-sm md:text-3xl text-warmSun tracking-wider mb-2">From old times to our wedding night.</h2>
+            <p class="font-noto text-xs md:text-lg text-gray-600 tracking-wide">從那些舊日時光，到我們的婚禮之夜</p>
+        </div>
+        
+        <!-- 卡片式倒數 (縮小間距，確保手機版左右留白) -->
+        <div class="flex flex-row justify-center items-center gap-2 md:gap-8 mb-6 md:mb-10 w-full max-w-lg" id="countdown-cards">
             <!-- 天數 -->
             <div class="flex items-center">
-                <div class="bg-white shadow-glow rounded-xl md:rounded-2xl w-16 h-20 md:w-28 md:h-32 flex flex-col justify-center items-center transform transition duration-500 hover:-translate-y-2">
-                    <span id="cd-days" class="text-3xl md:text-6xl font-hoefler text-gray-700 font-bold">00</span>
+                <div class="bg-white shadow-glow rounded-xl w-12 h-14 md:w-24 md:h-28 flex flex-col justify-center items-center transform transition hover:-translate-y-1">
+                    <span id="cd-days" class="text-xl md:text-5xl font-hoefler text-gray-700">00</span>
                 </div>
-                <div class="w-px h-12 md:h-20 bg-gray-200 mx-3 md:mx-6"></div>
-                <span class="font-hoefler text-morandiGreen tracking-widest text-sm md:text-xl uppercase">Days</span>
+                <div class="w-px h-8 md:h-16 bg-gray-300 mx-2 md:mx-5"></div>
+                <span class="font-hoefler text-morandiGreen tracking-widest text-[10px] md:text-lg">Days</span>
             </div>
             
             <!-- 小時 -->
             <div class="flex items-center">
-                <div class="bg-white shadow-glow rounded-xl md:rounded-2xl w-16 h-20 md:w-28 md:h-32 flex flex-col justify-center items-center transform transition duration-500 hover:-translate-y-2">
-                    <span id="cd-hours" class="text-3xl md:text-6xl font-hoefler text-gray-700 font-bold">00</span>
+                <div class="bg-white shadow-glow rounded-xl w-12 h-14 md:w-24 md:h-28 flex flex-col justify-center items-center transform transition hover:-translate-y-1">
+                    <span id="cd-hours" class="text-xl md:text-5xl font-hoefler text-gray-700">00</span>
                 </div>
-                <div class="w-px h-12 md:h-20 bg-gray-200 mx-3 md:mx-6"></div>
-                <span class="font-hoefler text-morandiGreen tracking-widest text-sm md:text-xl uppercase">Hrs</span>
+                <div class="w-px h-8 md:h-16 bg-gray-300 mx-2 md:mx-5"></div>
+                <span class="font-hoefler text-morandiGreen tracking-widest text-[10px] md:text-lg">Hrs</span>
             </div>
 
             <!-- 分鐘 -->
             <div class="flex items-center">
-                <div class="bg-white shadow-glow rounded-xl md:rounded-2xl w-16 h-20 md:w-28 md:h-32 flex flex-col justify-center items-center transform transition duration-500 hover:-translate-y-2">
-                    <span id="cd-mins" class="text-3xl md:text-6xl font-hoefler text-gray-700 font-bold">00</span>
+                <div class="bg-white shadow-glow rounded-xl w-12 h-14 md:w-24 md:h-28 flex flex-col justify-center items-center transform transition hover:-translate-y-1">
+                    <span id="cd-mins" class="text-xl md:text-5xl font-hoefler text-gray-700">00</span>
                 </div>
-                <div class="w-px h-12 md:h-20 bg-gray-200 mx-3 md:mx-6"></div>
-                <span class="font-hoefler text-morandiGreen tracking-widest text-sm md:text-xl uppercase">Mins</span>
+                <div class="w-px h-8 md:h-16 bg-gray-300 mx-2 md:mx-5"></div>
+                <span class="font-hoefler text-morandiGreen tracking-widest text-[10px] md:text-lg">Mins</span>
             </div>
         </div>
 
-        <p class="font-hoefler text-base md:text-2xl text-gray-400 tracking-wider text-center px-4 mt-4">
-            <span id="dynamic-days-text" class="text-warmSun font-bold">0</span> days to go, unlimited love to follow.
+        <!-- 變數文案 (英文) -->
+        <p class="font-hoefler text-xs md:text-xl text-gray-500 tracking-wide text-center px-4 mb-2">
+            <span id="dynamic-days-text-en" class="text-warmSun font-bold">0</span> days to go, unlimited love to follow.
+        </p>
+        
+        <!-- 變數文案 (中文) -->
+        <p class="font-noto text-xs md:text-lg text-gray-600 tracking-wide text-center px-4 leading-relaxed">
+            倒數 <span id="dynamic-days-text-tw" class="text-warmSun font-bold mx-1 text-sm md:text-xl">0</span> 天 餘生的愛才正要開始
         </p>
     </section>
 
-    <!-- 婚禮詳情 (恢復一開始的滿版設計，保留彩色照片，無毛玻璃) -->
-    <section id="details" class="relative w-full py-16 md:py-28 bg-scroll md:bg-fixed bg-[center_25%] md:bg-[center_35%] bg-cover" style="background-image: url('https://i.postimg.cc/CLkD6pgR/O60A6823.jpg');">
-        
-        <!-- 單純的白色半透明覆蓋，保留照片原始色彩，無毛玻璃效果 -->
-        <!-- 針對手機版上方使用輕微漸層，讓人物臉部更清晰；下方加深白色以利文字閱讀 -->
-        <div class="absolute inset-0 bg-gradient-to-b from-white/30 via-white/90 to-white/95 md:from-white/85 md:to-white/85"></div>
-        
-        <!-- 手機版加上 pt-56 將內容往下推，完美讓出上方的人像空間 -->
-        <div class="relative z-10 max-w-3xl mx-auto px-6 pt-56 md:pt-0 flex flex-col items-center text-center">
-            
-            <img src="https://i.postimg.cc/hGrXYct0/cliff.jpg" alt="克里夫莊園 Logo" class="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-md mb-8 border-[4px] border-white object-cover">
-            
-            <h2 class="text-2xl md:text-4xl font-bold text-warmSun mb-4 md:mb-6 tracking-[0.2em]">婚禮詳情</h2>
-            <p class="text-lg md:text-2xl text-gray-800 tracking-widest mb-10 font-bold">2026 年 11 月 01 日（星期日）</p>
+    <!-- 關於我們區塊 -->
+    <section id="about" class="w-full relative pb-16 md:pb-20">
+        <div class="w-full flex justify-center bg-bgBeige">
+            <div class="flex flex-row w-full max-w-[1600px] h-[45vh] md:h-[75vh] lg:h-[85vh]">
+                <div class="w-1/2 h-full">
+                    <img src="https://i.postimg.cc/nLNHXkFk/O60A6811-02.jpg" alt="About Us Left" class="w-full h-full object-cover object-[center_20%]">
+                </div>
+                <div class="w-1/2 h-full">
+                    <img src="https://i.postimg.cc/qqx0ZH8W/O60A6868-02.jpg" alt="About Us Right" class="w-full h-full object-cover object-[center_20%]">
+                </div>
+            </div>
+        </div>
 
-            <!-- 橫式時間軸 -->
-            <div class="w-full flex justify-center items-center gap-2 md:gap-8 mb-12 text-morandiGreen font-bold">
-                <div class="flex flex-col items-center">
-                    <svg class="w-6 h-6 md:w-7 md:h-7 mb-2 text-morandiGreen" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span class="text-xs md:text-lg whitespace-nowrap tracking-wider">16:30 證婚</span>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-0 -mt-8 md:-mt-16 flex justify-center">
+            <div class="bg-gray-100/90 backdrop-blur-lg rounded-2xl shadow-glow-lg w-full p-6 md:p-16 text-center border border-white/50 relative overflow-hidden">
+                <h3 class="font-noto text-base md:text-3xl text-morandiGreen font-bold tracking-widest mb-6 md:mb-8 leading-relaxed relative z-10 pt-2">
+                    她喜歡山 他喜歡海<br>我們因此看到了更多美景。
+                </h3>
+                <div class="font-noto text-gray-600 text-sm md:text-xl leading-relaxed tracking-wide md:px-12 relative z-10 space-y-4">
+                    <p>個性完全不同的兩人，走進了彼此的世界。</p>
+                    <p>愛情長跑了十年，我們攜手看到了更多美景。</p>
+                    <p>誠摯邀請大家一同來參與我們的婚禮，<br class="hidden md:block">見證我們幸福的時刻。</p>
                 </div>
-                <div class="w-8 md:w-16 h-px bg-morandiGreen/50"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 婚禮詳情 (V-Card) -->
+    <section id="details" class="relative w-full py-12 md:py-28 bg-scroll md:bg-fixed bg-[center_25%] md:bg-center bg-cover" style="background-image: url('https://i.postimg.cc/CLkD6pgR/O60A6823.jpg');">
+        <div class="absolute inset-0 bg-white/85 backdrop-grayscale"></div>
+        
+        <div class="relative z-10 max-w-3xl mx-auto px-6 flex flex-col items-center text-center">
+            
+            <img src="https://i.postimg.cc/hGrXYct0/cliff.jpg" alt="克里夫莊園 Logo" class="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-md mb-8 border-4 border-white">
+            
+            <h2 class="text-3xl font-bold text-warmSun mb-4 tracking-widest">婚禮詳情</h2>
+            <p class="text-lg md:text-xl text-gray-700 tracking-widest mb-10">2026 年 11 月 01 日（星期日）</p>
+
+            <div class="w-full flex justify-center items-center gap-2 md:gap-6 mb-12 text-morandiGreen font-bold">
+                <div class="flex flex-col items-center">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="text-xs md:text-base whitespace-nowrap">16:30 證婚</span>
+                </div>
+                <div class="w-6 md:w-16 h-px bg-morandiGreen/40"></div>
                 <div class="flex flex-col items-center text-warmSun">
-                    <svg class="w-6 h-6 md:w-7 md:h-7 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path></svg>
-                    <span class="text-xs md:text-lg whitespace-nowrap tracking-wider">17:30 晚宴</span>
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path></svg>
+                    <span class="text-xs md:text-base whitespace-nowrap">17:30 晚宴</span>
                 </div>
-                <div class="w-8 md:w-16 h-px bg-morandiGreen/50"></div>
+                <div class="w-6 md:w-16 h-px bg-morandiGreen/40"></div>
                 <div class="flex flex-col items-center">
-                    <svg class="w-6 h-6 md:w-7 md:h-7 mb-2 text-morandiGreen" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <span class="text-xs md:text-lg whitespace-nowrap tracking-wider">19:30 拍照</span>
+                    <svg class="w-5 h-5 md:w-6 md:h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="text-xs md:text-base whitespace-nowrap">19:30 拍照</span>
                 </div>
             </div>
 
-            <!-- 地點 -->
-            <div class="mb-10 text-gray-800">
-                <p class="font-bold text-xl md:text-2xl mb-3 tracking-widest"><span class="whitespace-nowrap">克里夫莊園</span></p>
-                <a href="https://maps.app.goo.gl/gjVzd7HcUScC8TR77" target="_blank" class="inline-flex items-center text-warmSun hover:text-morandiGreen transition-colors border-b border-warmSun pb-1 tracking-wider">
+            <div class="mb-10 text-gray-700">
+                <p class="font-bold text-lg mb-2"><span class="whitespace-nowrap">克里夫莊園</span></p>
+                <a href="https://maps.app.goo.gl/gjVzd7HcUScC8TR77" target="_blank" class="inline-flex items-center text-warmSun hover:text-morandiGreen transition-colors border-b border-warmSun pb-1">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     查看 Google 地圖導航
                 </a>
             </div>
 
             <!-- Dress Code -->
-            <div class="w-full bg-white/80 p-5 md:p-8 rounded-2xl shadow-sm mb-6 border border-white">
-                <h4 class="font-bold text-morandiGreen text-base md:text-lg mb-5 tracking-widest">服裝建議 (Dress Code)</h4>
-                <div class="flex justify-center gap-3 md:gap-8 mb-5">
-                    <div class="flex flex-col items-center"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#E6E6FA] shadow-inner border border-white mb-2"></div><span class="text-xs md:text-sm text-gray-700 tracking-wider whitespace-nowrap font-medium">淡紫色</span></div>
-                    <div class="flex flex-col items-center"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#FFFACD] shadow-inner border border-white mb-2"></div><span class="text-xs md:text-sm text-gray-700 tracking-wider whitespace-nowrap font-medium">鵝黃色</span></div>
-                    <div class="flex flex-col items-center"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#FAEBD7] shadow-inner border border-white mb-2"></div><span class="text-xs md:text-sm text-gray-700 tracking-wider whitespace-nowrap font-medium">杏色</span></div>
-                    <div class="flex flex-col items-center"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#FFFFFF] shadow-inner border border-gray-200 mb-2"></div><span class="text-xs md:text-sm text-gray-700 tracking-wider whitespace-nowrap font-medium">白色</span></div>
+            <div class="w-full bg-white/60 p-6 rounded-xl shadow-sm mb-8">
+                <h4 class="font-bold text-morandiGreen mb-4 tracking-widest">服裝建議 (Dress Code)</h4>
+                <div class="flex justify-center gap-4 mb-5">
+                    <div class="flex flex-col items-center"><div class="w-8 h-8 rounded-full bg-[#E6E6FA] shadow-inner border border-gray-100 mb-2"></div><span class="text-xs text-gray-600">淡紫色</span></div>
+                    <div class="flex flex-col items-center"><div class="w-8 h-8 rounded-full bg-[#FFFACD] shadow-inner border border-gray-100 mb-2"></div><span class="text-xs text-gray-600">鵝黃色</span></div>
+                    <div class="flex flex-col items-center"><div class="w-8 h-8 rounded-full bg-[#FAEBD7] shadow-inner border border-gray-100 mb-2"></div><span class="text-xs text-gray-600">杏色</span></div>
+                    <div class="flex flex-col items-center"><div class="w-8 h-8 rounded-full bg-[#FFFFFF] shadow-inner border border-gray-200 mb-2"></div><span class="text-xs text-gray-600">白色</span></div>
                 </div>
-                <p class="text-xs md:text-base text-gray-600 tracking-wider leading-relaxed text-center font-medium">
+                <!-- 服裝建議文案斷行優化 -->
+                <p class="text-xs md:text-sm text-gray-500 tracking-wider leading-relaxed text-center">
                     期待您以淡紫或鵝黃色系為主<br>
-                    若無此兩色 杏色與白色也是很好的選擇喔！
+                    若無此兩色，杏色與白色也是很好的選擇喔！
                 </p>
             </div>
 
             <!-- 交通指引 摺疊面板 -->
-            <div class="w-full text-left bg-white/90 rounded-2xl overflow-hidden shadow-sm border border-white">
-                <button id="accordion-btn" class="w-full px-5 py-4 flex justify-between items-center text-morandiGreen font-bold focus:outline-none hover:bg-white transition-colors">
-                    <span class="tracking-widest text-sm md:text-lg">交通指引與停車資訊</span>
-                    <svg id="accordion-icon" class="w-5 h-5 md:w-6 md:h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <div class="w-full text-left bg-white/80 rounded-xl overflow-hidden shadow-sm">
+                <button id="accordion-btn" class="w-full px-6 py-4 flex justify-between items-center text-morandiGreen font-bold focus:outline-none hover:bg-gray-50 transition-colors">
+                    <span class="tracking-widest">交通指引與停車資訊</span>
+                    <svg id="accordion-icon" class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="accordion-content" class="accordion-content bg-white/70 px-5">
-                    <div class="py-4 text-gray-700 text-sm md:text-base leading-loose border-t border-white/60 font-medium">
+                <div id="accordion-content" class="accordion-content bg-white/50 px-6">
+                    <div class="py-4 text-gray-600 text-sm leading-relaxed border-t border-gray-100">
                         <p class="mb-3"><strong class="text-warmSun">自行開車：</strong>莊園附設專屬戶外停車場，請依現場服務人員引導停放。</p>
                         <p class="mb-3"><strong class="text-warmSun">大眾運輸：</strong>若搭乘高鐵至<span class="whitespace-nowrap">高鐵台中站</span>，建議轉乘計程車，車程約需 25 分鐘。</p>
-                        <p><strong class="text-warmSun">貼心提醒：</strong>因周邊道路較為靜謐，夜間行車請注意安全。</p>
+                        <p><strong class="text-warmSun">貼心提醒：</strong>因周邊道路較為靜謐，夜間行車請注意安全。若有搭乘大眾運輸的需求，請務必留意公車末班車時間（約21:00），建議提早安排回程交通。</p>
                     </div>
                 </div>
             </div>
+            
         </div>
     </section>
 
-    <section id="rsvp" class="py-24 md:py-32 bg-bgBeige relative">
-        <div class="max-w-3xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-morandiGreen tracking-[0.2em] mb-4">出席回函</h2>
-                <p class="text-gray-500 tracking-widest text-base">期待您與我們一同分享這份喜悅<br class="block md:hidden">請於 2026/10/01 前填寫完畢。</p>
+    <!-- 出席回函 (RSVP) -->
+    <section id="rsvp" class="py-20 md:py-24 bg-bgBeige relative">
+        <div class="max-w-2xl mx-auto px-4 md:px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl md:text-3xl font-bold text-morandiGreen tracking-widest mb-4">出席回函</h2>
+                <p class="text-gray-500 tracking-wide text-xs md:text-sm">期待您與我們一同分享這份喜悅<br class="block md:hidden">請於 2026/10/01 前填寫完畢。</p>
             </div>
 
-            <!-- 隱藏的 Iframe，防止表單提交後頁面跳轉 -->
+            <!-- 隱藏的 Iframe，防止 Google Form 跳轉 -->
             <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
             
-            <div id="form-container" class="bg-white p-8 md:p-14 rounded-3xl shadow-glow-lg border border-white">
-                <!-- 表單 Action 設定為 Google Form 提交網址 -->
-                <form id="wedding-form" action="https://docs.google.com/forms/d/e/1FAIpQLSffpkUy-ENj3wuwovGWEp5vj_rFNYdZi-ouflb82G1s3O32hg/formResponse" method="POST" target="hidden_iframe" class="space-y-10">
+            <div id="form-container" class="bg-white p-6 md:p-12 rounded-2xl shadow-glow-lg">
+                <!-- Action 對應 Google Form 的 formResponse 網址 -->
+                <form id="wedding-form" action="https://docs.google.com/forms/d/e/1FAIpQLSffpkUy-ENj3wuwovGWEp5vj_rFNYdZi-ouflb82G1s3O32hg/formResponse" method="POST" target="hidden_iframe" class="space-y-6 md:space-y-8">
                     
-                    <!-- 1. 姓名 -->
+                    <!-- 1. 姓名 (entry.189488095) -->
                     <div>
-                        <label class="block font-bold text-morandiGreen mb-3 tracking-wider text-base">您的姓名 <span class="text-red-400">*</span></label>
-                        <input type="text" name="entry.189488095" required class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium placeholder-gray-400 focus:bg-white transition-colors" placeholder="">
+                        <label class="block font-bold text-morandiGreen mb-2 text-sm">您的姓名 <span class="text-red-400">*</span></label>
+                        <input type="text" name="entry.189488095" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="請填寫全名">
                     </div>
 
-                    <!-- 2. 聯絡信箱 (獨立置於姓名下方) -->
+                    <!-- 2. 聯絡信箱 (entry.972975101) -->
                     <div>
-                        <label class="block font-bold text-morandiGreen mb-3 tracking-wider text-base">聯絡信箱 <span class="text-red-400">*</span></label>
-                        <input type="email" name="entry.972975101" required class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium placeholder-gray-400 focus:bg-white transition-colors" placeholder="">
+                        <label class="block font-bold text-morandiGreen mb-2 text-sm">聯絡信箱 <span class="text-red-400">*</span></label>
+                        <input type="email" name="entry.972975101" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="example@email.com">
                     </div>
 
-                    <!-- 3. 出席意願 -->
+                    <!-- 3. 出席意願 (entry.1715883295) -->
                     <div>
-                        <label class="block font-bold text-morandiGreen mb-4 tracking-wider text-base">出席意願 <span class="text-red-400">*</span></label>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <label class="flex-1 flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-gray-700 font-medium tracking-wider">
-                                <input type="radio" name="entry.1715883295" value="排除萬難都參加" required class="w-5 h-5 mr-3"> 排除萬難都參加
+                        <label class="block font-bold text-morandiGreen mb-3 text-sm">出席意願 <span class="text-red-400">*</span></label>
+                        <div class="flex flex-col sm:flex-row gap-3 md:gap-4">
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
+                                <input type="radio" name="entry.1715883295" value="排除萬難都參加" required class="w-4 h-4 mr-3"> 排除萬難都參加
                             </label>
-                            <label class="flex-1 flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-gray-700 font-medium tracking-wider">
-                                <input type="radio" name="entry.1715883295" value="無法參加，給予祝福" class="w-5 h-5 mr-3"> 無法參加，給予祝福
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- 4. 關係 -->
-                    <div>
-                        <label class="block font-bold text-morandiGreen mb-4 tracking-wider text-base">您是哪一方的親友？ <span class="text-red-400">*</span></label>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <label class="flex-1 flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-gray-700 font-medium tracking-wider">
-                                <input type="radio" name="entry.1157217011" value="新郎親友" required class="w-5 h-5 mr-3"> 新郎親友
-                            </label>
-                            <label class="flex-1 flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-gray-700 font-medium tracking-wider">
-                                <input type="radio" name="entry.1157217011" value="新娘親友" class="w-5 h-5 mr-3"> 新娘親友
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
+                                <input type="radio" name="entry.1715883295" value="無法參加，給予祝福" class="w-4 h-4 mr-3"> 無法參加，給予祝福
                             </label>
                         </div>
                     </div>
 
-                    <!-- 5. 出席人數 -->
+                    <!-- 4. 關係 (entry.1157217011) -->
                     <div>
-                        <label class="block font-bold text-morandiGreen mb-3 tracking-wider text-base">出席人數（請包含小孩，若無法參加請填 0） <span class="text-red-400">*</span></label>
-                        <input type="number" id="attendees-count" name="entry.1073911048" min="0" required class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium placeholder-gray-400 focus:bg-white transition-colors" placeholder="">
+                        <label class="block font-bold text-morandiGreen mb-3 text-sm">您是哪一方的親友？ <span class="text-red-400">*</span></label>
+                        <div class="flex flex-col sm:flex-row gap-3 md:gap-4">
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
+                                <input type="radio" name="entry.1157217011" value="新郎親友" required class="w-4 h-4 mr-3"> 新郎親友
+                            </label>
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
+                                <input type="radio" name="entry.1157217011" value="新娘親友" class="w-4 h-4 mr-3"> 新娘親友
+                            </label>
+                        </div>
                     </div>
 
-                    <!-- 動態區塊：飲食需求與兒童椅 -->
-                    <div id="dynamic-needs-section" class="form-section space-y-8 bg-glassBeige/50 p-6 md:p-8 rounded-2xl border border-warmSun/20">
+                    <!-- 5. 出席人數 (entry.1073911048) -->
+                    <div>
+                        <label class="block font-bold text-morandiGreen mb-2 text-sm">出席總人數（請包含小孩，若無法參加請填 0） <span class="text-red-400">*</span></label>
+                        <input type="number" id="attendees-count" name="entry.1073911048" min="0" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="例如：2">
+                    </div>
+
+                    <!-- 動態區塊 1：攜伴姓名 (當人數 > 1 時顯示) -->
+                    <div id="companion-section" class="form-section">
+                        <label class="block font-bold text-morandiGreen mb-2 text-sm">攜伴來賓姓名 <span class="text-xs text-gray-400 font-normal">(若有多位請用逗號隔開)</span></label>
+                        <!-- (entry.917950535) -->
+                        <input type="text" id="companion-name" name="entry.917950535" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="請填寫攜伴者姓名">
+                    </div>
+
+                    <!-- 動態區塊 2：飲食需求與兒童椅 (當人數 > 0 時顯示) -->
+                    <div id="dynamic-needs-section" class="form-section space-y-6 md:space-y-8 bg-glassBeige/40 p-4 md:p-6 rounded-xl border border-warmSun/20">
                         
-                        <!-- 飲食需求 -->
+                        <!-- 素食需求 (entry.306138647) -->
                         <div>
-                            <label class="block font-bold text-morandiGreen mb-4 tracking-wider text-base">是否有素食需求？</label>
-                            <div class="flex gap-6 mb-4">
-                                <label class="flex items-center text-gray-700 font-medium tracking-wider cursor-pointer">
-                                    <input type="radio" name="entry.306138647" value="是" class="w-5 h-5 mr-2 veg-radio"> 是
+                            <label class="block font-bold text-morandiGreen mb-3 text-sm">是否有素食需求？</label>
+                            <div class="flex gap-4 mb-3">
+                                <label class="flex items-center text-warmSun font-medium">
+                                    <input type="radio" name="entry.306138647" value="是" class="w-4 h-4 mr-2 veg-radio"> 是
                                 </label>
-                                <label class="flex items-center text-gray-700 font-medium tracking-wider cursor-pointer">
-                                    <input type="radio" name="entry.306138647" value="否" class="w-5 h-5 mr-2 veg-radio" checked> 否
+                                <label class="flex items-center text-warmSun font-medium">
+                                    <input type="radio" name="entry.306138647" value="否" class="w-4 h-4 mr-2 veg-radio" checked> 否
                                 </label>
                             </div>
-                            <!-- 素食數量 -->
+                            <!-- 素食數量 (entry.634158418) - 勾選是才顯示 -->
                             <div id="veg-count-section" class="form-section">
-                                <label class="block font-bold text-morandiGreen mb-3 tracking-wider text-sm">素食餐點數量</label>
-                                <input type="number" name="entry.634158418" min="0" class="w-full px-5 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium focus:border-warmSun transition-colors" placeholder="">
+                                <label class="block font-bold text-morandiGreen mb-2 text-xs">素食餐點數量</label>
+                                <input type="number" name="entry.634158418" min="0" class="w-full px-4 py-2 rounded-lg border border-gray-200 text-warmSun font-medium placeholder-gray-300" placeholder="請填寫數量">
                             </div>
                         </div>
 
-                        <div class="w-full h-px bg-warmSun/20"></div>
-
-                        <!-- 兒童椅需求 -->
+                        <!-- 兒童椅需求 (entry.1887813399) -->
                         <div>
-                            <label class="block font-bold text-morandiGreen mb-4 tracking-wider text-base">是否需要兒童餐椅？</label>
-                            <div class="flex gap-6 mb-4">
-                                <label class="flex items-center text-gray-700 font-medium tracking-wider cursor-pointer">
-                                    <input type="radio" name="entry.1887813399" value="是" class="w-5 h-5 mr-2 baby-radio"> 是
+                            <label class="block font-bold text-morandiGreen mb-3 text-sm">是否需要兒童餐椅？</label>
+                            <div class="flex gap-4 mb-3">
+                                <label class="flex items-center text-warmSun font-medium">
+                                    <input type="radio" name="entry.1887813399" value="是" class="w-4 h-4 mr-2 baby-radio"> 是
                                 </label>
-                                <label class="flex items-center text-gray-700 font-medium tracking-wider cursor-pointer">
-                                    <input type="radio" name="entry.1887813399" value="否" class="w-5 h-5 mr-2 baby-radio" checked> 否
+                                <label class="flex items-center text-warmSun font-medium">
+                                    <input type="radio" name="entry.1887813399" value="否" class="w-4 h-4 mr-2 baby-radio" checked> 否
                                 </label>
                             </div>
-                            <!-- 兒童椅數量 -->
+                            <!-- 兒童椅數量 (entry.439071470) - 勾選是才顯示 -->
                             <div id="baby-count-section" class="form-section">
-                                <label class="block font-bold text-morandiGreen mb-3 tracking-wider text-sm">兒童餐椅需求數量</label>
-                                <input type="number" name="entry.439071470" min="0" class="w-full px-5 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium focus:border-warmSun transition-colors" placeholder="">
+                                <label class="block font-bold text-morandiGreen mb-2 text-xs">兒童餐椅需求數量</label>
+                                <input type="number" name="entry.439071470" min="0" class="w-full px-4 py-2 rounded-lg border border-gray-200 text-warmSun font-medium placeholder-gray-300" placeholder="請填寫數量">
                             </div>
                         </div>
                     </div>
 
-                    <!-- 6. 喜帖方式 -->
+                    <!-- 6. 喜帖方式 (entry.444061940) -->
                     <div>
-                        <label class="block font-bold text-morandiGreen mb-4 tracking-wider text-base">希望收到哪種喜帖？ <span class="text-red-400">*</span></label>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <label class="flex-1 flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-gray-700 font-medium tracking-wider">
-                                <input type="radio" name="entry.444061940" value="電子喜帖" required class="w-5 h-5 mr-3 invite-radio"> 電子喜帖
+                        <label class="block font-bold text-morandiGreen mb-3 text-sm">希望收到哪種喜帖？ <span class="text-red-400">*</span></label>
+                        <div class="flex flex-col sm:flex-row gap-3 md:gap-4">
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
+                                <input type="radio" name="entry.444061940" value="電子喜帖" required class="w-4 h-4 mr-3 invite-radio"> 電子喜帖
                             </label>
-                            <label class="flex-1 flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-gray-700 font-medium tracking-wider">
-                                <input type="radio" name="entry.444061940" value="紙本喜帖" class="w-5 h-5 mr-3 invite-radio"> 紙本喜帖
+                            <label class="flex-1 flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-glassBeige transition text-warmSun font-medium text-sm md:text-base">
+                                <input type="radio" name="entry.444061940" value="紙本喜帖" class="w-4 h-4 mr-3 invite-radio"> 紙本喜帖
                             </label>
                         </div>
                         
-                        <!-- 收件地址 -->
-                        <div id="address-section" class="form-section">
-                            <label class="block font-bold text-morandiGreen mb-3 tracking-wider text-sm">收件地址 <span class="text-red-400">*</span></label>
-                            <input type="text" id="physical-address" name="entry.997440738" class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium focus:bg-white transition-colors" placeholder="">
+                        <!-- 收件地址 (勾選紙本喜帖才顯示) -->
+                        <div id="address-section" class="form-section mt-4 space-y-3">
+                            <div>
+                                <label class="block font-bold text-morandiGreen mb-1 text-sm">郵遞區號</label>
+                                <input type="text" id="zip-code-input" class="w-full md:w-1/3 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="例：324">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-morandiGreen mb-1 text-sm">縣市鄉鎮市區路名</label>
+                                <input type="text" id="address-detail-input" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="例：桃園市平鎮區XX路X號">
+                            </div>
+                            <p class="text-xs text-gray-400">若不確定郵遞區號，可參考 <a href="https://www.post.gov.tw/post/internet/Postal/index.jsp?ID=208" target="_blank" class="text-warmSun underline">中華郵政查詢</a></p>
+                            
+                            <!-- 合併後的真實隱藏收件地址欄位 (entry.997440738) -->
+                            <input type="hidden" name="entry.997440738" id="final-address-field">
                         </div>
                     </div>
 
-                    <!-- 7. 留言祝福牆 -->
+                    <!-- 7. 留言祝福牆 (entry.166676987) -->
                     <div>
-                        <label class="block font-bold text-morandiGreen mb-2 tracking-wider text-base">留言祝福</label>
-                        <p class="text-sm text-gray-400 mb-4 tracking-wider">不管能不能來，都歡迎留下你想對我們說的話！</p>
-                        <textarea name="entry.166676987" rows="5" class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium focus:bg-white transition-colors" placeholder=""></textarea>
+                        <label class="block font-bold text-morandiGreen mb-2 text-sm">留言祝福</label>
+                        <p class="text-xs text-gray-400 mb-3">不管能不能來，都歡迎留下你想對我們說的話！</p>
+                        <textarea name="entry.166676987" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-warmSun font-medium placeholder-gray-300 focus:bg-white transition-colors" placeholder="寫下您的祝福..."></textarea>
                     </div>
 
                     <!-- 送出按鈕 -->
-                    <div class="pt-6">
-                        <button type="submit" class="w-full bg-warmSun text-white font-bold tracking-[0.2em] text-lg py-5 rounded-2xl shadow-md hover:shadow-glow-lg hover:bg-[#c69360] transition-all transform hover:-translate-y-1">
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-warmSun text-white font-bold tracking-widest py-4 rounded-xl shadow-md hover:shadow-glow-lg hover:bg-[#c29262] transition-all transform hover:-translate-y-1">
                             送出回函
                         </button>
                     </div>
                 </form>
             </div>
             
-            <!-- 成功訊息區塊 -->
-            <div id="success-message" class="hidden bg-white p-12 rounded-3xl shadow-glow-lg text-center mt-10 border border-white">
-                <svg class="w-20 h-20 text-morandiGreen mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <h3 class="text-3xl font-bold text-warmSun mb-4 tracking-widest">感謝您的回覆！</h3>
-                <p class="text-gray-600 tracking-widest text-lg leading-relaxed">我們已收到您的回函<br>期待見面。</p>
+            <!-- 成功訊息區塊 (預設隱藏) -->
+            <div id="success-message" class="hidden bg-white p-8 md:p-10 rounded-2xl shadow-glow-lg text-center mt-8">
+                <svg class="w-16 h-16 text-morandiGreen mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h3 class="text-xl md:text-2xl font-bold text-warmSun mb-2 tracking-widest">感謝您的回覆！</h3>
+                <p class="text-gray-600 tracking-wide text-sm md:text-base">我們已收到您的回函，期待見面。</p>
             </div>
         </div>
     </section>
 
-    <footer class="bg-white py-10 text-center text-gray-400 text-sm tracking-widest font-hoefler">
+    <!-- 頁尾 -->
+    <footer class="bg-white py-8 text-center text-gray-400 text-xs md:text-sm tracking-wider font-hoefler">
         <p>&copy; 2026 Landy & Shady Wedding. All Rights Reserved.</p>
     </footer>
 
     <script>
+        // ------------------------------------
+        // 計時器邏輯
+        // ------------------------------------
         const targetDate = new Date("2026-11-01T16:30:00+08:00").getTime();
         
         function updateCountdown() {
@@ -387,8 +463,9 @@
             const distance = targetDate - now;
 
             if (distance < 0) {
-                document.getElementById("countdown-cards").innerHTML = '<span class="text-4xl text-warmSun font-bold tracking-widest">The day has arrived!</span>';
-                document.getElementById("dynamic-days-text").innerText = "0";
+                document.getElementById("countdown-cards").innerHTML = '<span class="text-xl md:text-3xl text-warmSun font-bold">The day has arrived!</span>';
+                document.getElementById("dynamic-days-text-en").innerText = "0";
+                document.getElementById("dynamic-days-text-tw").innerText = "0";
                 return;
             }
 
@@ -400,13 +477,17 @@
             document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
             document.getElementById("cd-mins").innerText = minutes.toString().padStart(2, '0');
             
-            // 將『日』作為變數更新到文案中
-            document.getElementById("dynamic-days-text").innerText = days;
+            // 將『日』作為變數更新到文案中 (英文與中文)
+            document.getElementById("dynamic-days-text-en").innerText = days;
+            document.getElementById("dynamic-days-text-tw").innerText = days;
         }
 
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
+        // ------------------------------------
+        // 交通指引摺疊面板邏輯
+        // ------------------------------------
         const accordionBtn = document.getElementById('accordion-btn');
         const accordionContent = document.getElementById('accordion-content');
         const accordionIcon = document.getElementById('accordion-icon');
@@ -416,9 +497,13 @@
             accordionIcon.classList.toggle('rotate-180');
         });
 
-        // 智能表單邏輯
+        // ------------------------------------
+        // 智能表單顯示邏輯
+        // ------------------------------------
         const attendeesInput = document.getElementById('attendees-count');
         const dynamicNeedsSection = document.getElementById('dynamic-needs-section');
+        const companionSection = document.getElementById('companion-section');
+        const companionInput = document.getElementById('companion-name');
         
         const vegRadios = document.querySelectorAll('.veg-radio');
         const vegCountSection = document.getElementById('veg-count-section');
@@ -428,19 +513,30 @@
 
         const inviteRadios = document.querySelectorAll('.invite-radio');
         const addressSection = document.getElementById('address-section');
-        const physicalAddress = document.getElementById('physical-address');
+        const zipInput = document.getElementById('zip-code-input');
+        const addressDetailInput = document.getElementById('address-detail-input');
 
-        // 監聽出席人數：大於0才顯示飲食需求與兒童椅
+        // 監聽人數變化
         attendeesInput.addEventListener('input', function() {
             const val = parseInt(this.value);
+            
+            // 處理素食與兒童椅區塊 (人數 > 0 才顯示)
             if (val > 0) {
                 dynamicNeedsSection.classList.add('active');
             } else {
                 dynamicNeedsSection.classList.remove('active');
             }
+
+            // 處理攜伴姓名區塊 (人數 > 1 才顯示)
+            if (val > 1) {
+                companionSection.classList.add('active');
+            } else {
+                companionSection.classList.remove('active');
+                companionInput.value = ""; // 隱藏時清空攜伴名字
+            }
         });
 
-        // 監聽素食選項：勾選是才顯示數量輸入
+        // 監聽素食選項
         vegRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === '是') {
@@ -451,7 +547,7 @@
             });
         });
 
-        // 監聽兒童椅選項：勾選是才顯示數量輸入
+        // 監聽兒童椅選項
         babyRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === '是') {
@@ -462,36 +558,61 @@
             });
         });
 
-        // 監聽喜帖方式：勾選紙本喜帖才顯示地址欄位，並設為必填
+        // 監聽喜帖選項
         inviteRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === '紙本喜帖') {
                     addressSection.classList.add('active');
-                    physicalAddress.setAttribute('required', 'required');
+                    zipInput.setAttribute('required', 'required');
+                    addressDetailInput.setAttribute('required', 'required');
                 } else {
                     addressSection.classList.remove('active');
-                    physicalAddress.removeAttribute('required');
-                    physicalAddress.value = ''; // 清空地址
+                    zipInput.removeAttribute('required');
+                    addressDetailInput.removeAttribute('required');
                 }
             });
         });
 
+        // ------------------------------------
+        // Iframe 隱藏提交處理邏輯
+        // ------------------------------------
         let submitted = false;
         const form = document.getElementById('wedding-form');
         const hiddenIframe = document.getElementById('hidden_iframe');
 
+        // 當 iframe 載入完成（即表單送出後跳轉完畢）
         hiddenIframe.addEventListener('load', function() {
             if (submitted) {
-                document.getElementById('form-container').style.display = 'none';
-                document.getElementById('success-message').classList.remove('hidden');
-                // 滾動至成功訊息區塊
-                document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
+                showSuccessMessage();
             }
         });
         
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(e) {
+            // 提交前，將「郵遞區號」與「詳細地址」合併，放入對應的隱藏 input 中
+            const zipVal = zipInput.value.trim();
+            const detailVal = addressDetailInput.value.trim();
+            
+            const isPaperInvite = document.querySelector('input[name="entry.444061940"]:checked')?.value === '紙本喜帖';
+            
+            if(isPaperInvite && (zipVal !== '' || detailVal !== '')) {
+                // 格式化為：[郵遞區號] 詳細地址
+                const combinedAddress = (zipVal ? `[${zipVal}] ` : '') + detailVal;
+                document.getElementById('final-address-field').value = combinedAddress;
+            } else {
+                document.getElementById('final-address-field').value = "";
+            }
+            
+            // 標記已提交
             submitted = true;
         });
+
+        function showSuccessMessage() {
+            // 隱藏表單區塊，顯示成功訊息
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('success-message').classList.remove('hidden');
+            // 平滑滾動至成功訊息區域
+            document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
+        }
     </script>
 </body>
 </html>
